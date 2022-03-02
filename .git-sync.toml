@@ -1,17 +1,19 @@
 # DO NOT CHANGE THIS FILE MANUALLY
+# SINCE THIS IS A TEMPLATE FILE
 [global]
 enable = "true"
 
 [remote]
-host = "github.com"
+host = "your remote server"
 port = 22
-username = ""
-protocal = "ssh" # we will add more support in the future
-token-path = ""  # ssh key path
+username = "remote server username"
+protocal = "ssh" # we will add more protocal support in the future
+token-path = "path/to/ssh_keys"  # ssh key path
 
+# some enum values used by other configuration
 [enum]
-invoke_types = ["on_change", "on_exit_shell", "on_minutes"]
-repo_status = ["public", "private"]
+invoke_types = ["on_change", "on_exit_shell", "on_exit", "on_minutes"]
+repo_status  = ["public", "private"]
 commit_types = ["auto","manually"]
 
 

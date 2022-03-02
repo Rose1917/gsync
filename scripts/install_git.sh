@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 git_install(){
 	if command -v apt >/dev/null 2>&1;then
 		echo "apt distribution"
