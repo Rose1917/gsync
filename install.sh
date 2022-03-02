@@ -119,6 +119,7 @@ fi
 sed -e "s,host.*,host = \"$SERVER_HOST\"," -i $HOME/.git-sync.toml
 sed -e "s,port.*,port = $SERVER_PORT," -i $HOME/.git-sync.toml
 sed -e "s,username.*,username = \"$USER_NAME\"," -i $HOME/.git-sync.toml
+sed -e "s,local_base.*,local_base = \"/home/$USER_NAME\"," -i $HOME/.git-sync.toml
 
 dividing_line
 show_ok
@@ -153,6 +154,11 @@ do
 
 	fi
 done
+
+
+# add alias
+
+# add github support
 
 
 
@@ -192,4 +198,5 @@ done
 # # read the git cloud repos
 # git repo list
 
-#
+# TODO
+# set local base

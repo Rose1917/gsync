@@ -8,6 +8,10 @@ host = "your remote server"
 port = 22
 username = "remote server username"
 protocal = "ssh" # we will add more protocal support in the future
+remote_base = "" # where to store the repos in the remote
+
+[local]
+local_base = ""
 
 # some enum values used by other configuration
 [enum]
