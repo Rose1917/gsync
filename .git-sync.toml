@@ -1,0 +1,50 @@
+# DO NOT CHANGE THIS FILE MANUALLY
+[global]
+enable = "true"
+
+[remote]
+host = "github.com"
+port = 22
+username = ""
+protocal = "ssh" # we will add more support in the future
+token-path = ""  # ssh key path
+
+[enum]
+invoke_types = ["on_change", "on_exit_shell", "on_minutes"]
+repo_status = ["public", "private"]
+commit_types = ["auto","manually"]
+
+
+[[owned-repos]]
+# repo_name = "" # will mapped to https://github.com/username/reponame
+# local_path = "gh-sync" 
+# sync_freq = 5
+# if_owner = false
+# if_activated = true
+# commit_info = ""
+# commit_trigger = "auto"
+
+# for the local repos, you need to specify the absolute path of it
+[[owned-repos]]
+# repo_name = ""
+# local_path = "/home/march1917/projects/rust/citybound"
+# remote_path = ""
+# sync_freq = 7
+# is_on_gh = true
+# if_activated = true
+# commit_info = ""
+# commit_trigger = "auto"
+
+[[cooperation-repos]]
+
+
+[[cooperation-repos]]
+
+
+[[cloud-repos]]
+# repo_name = ""
+# sync_freq = 7
+# is_on_gh = true
+# if_activated = true
+# commit_info = ""
+# commit_trigger = "auto"

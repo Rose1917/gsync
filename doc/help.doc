@@ -1,0 +1,69 @@
+####gh-sync
+* gh-sync is a auto commit and pull tool. git has been so popular due to its powerful version management. and in the mean while, github also became the world's most popular remote git server. but sometimes we need to frequently push and pull in two machines which could be very annoying. gh-sync is a tools to auto commit and push and pull(sync) tool.
+
+#### manually or automatically?
+* automatically will lose some important infromation but since we still stores every diff between commit, it will not be so bad.
+
+#### Benefits
+* solving the problem you forget to push
+* you can auto-sync just like onedrive
+* by .gitignore, you can choose what to sync to accelerate the sync
+
+#### user
+* how to instruct the file
+
+#### dependency
+* shell to install
+* gh, the install script will try to help you guide the gh installation
+
+#### some concepts
+* cloud and local: we store your data in github which is clound. and also you will have another copy of file in your local. the cloud is the key to make sure that we can do the sync.
+* owned and cooperation:for all the directory you are syncing, owned is the directory created by yourself. and cooperation is the directory synced from the cloud.
+* 
+
+#### commands
+```shell
+gs list 
+	gs list --owned    # list all the directory created by you
+	gs list --cloud    # list all the directory 
+	gs list [--synced] # default list the tracks repos
+	gs list --all      # list all the repos created by you and in the remote repos
+
+gs sync 
+	gs sync --owned path/to/repo
+	gs sync --cloud repo_name
+
+gs stop
+	gs stop --repo repo_name
+
+gs enable
+	gs enable
+	gs disable
+
+gs status
+	# show the login status
+	# show the enable status
+gs log
+	gs log --all
+	gs log --repo repo_name
+
+gs history
+	gs history --repo repo_name
+
+gs config
+	gs config --show
+
+gs server
+	gs server --show
+	gs servere --config  --host host --token token --proc proc
+
+# gs group
+#	gs group --list
+#	gs gro
+
+# gs search
+
+```
+
+#### advanced features
+* you can set your own git server instead of the default github
