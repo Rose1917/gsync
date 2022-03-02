@@ -8,7 +8,6 @@ host = "your remote server"
 port = 22
 username = "remote server username"
 protocal = "ssh" # we will add more protocal support in the future
-token-path = "path/to/ssh_keys"  # ssh key path
 
 # some enum values used by other configuration
 [enum]

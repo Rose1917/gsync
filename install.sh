@@ -6,10 +6,17 @@ DEBUG="true"
 CONF_FILE=".git-sync.toml"
 CONF_PATH="$HOME/.git-sync.toml"
 
+set -C
+
 # debug
 if [ "$DEBUG" = "true" ];then
+	# set -x 
 	if [ -f "$CONF_PATH" ]; then
 		rm ~/.git-sync.toml
+	fi
+
+	if [ -f "$HOME/.ssh/id_rsa_sync.pub" ]; then 
+		rm "$HOME/.ssh/id_rsa_sync*"
 	fi
 fi
 
@@ -93,33 +100,64 @@ if [ "$USER_NAME" = "" ]; then
 fi
 
 
-dividing_line
-TOKEN_PATH=""
-# set the ssh token path
-while [ 1 ];
-do
-	read -e -p "token_path:"  TOKEN_PATH
-	if [ -f $TOKEN_PATH ];then 
-		break
-	else
-		echo "token not exists, please re-input"
-		echo ""
-	fi
-done
+# dividing_line
+# TOKEN_PATH=""
+# # set the ssh token path
+# while [ 1 ];
+# do
+# 	read -e -p "token_path:"  TOKEN_PATH
+# 	if [ -f $TOKEN_PATH ];then 
+# 		break
+# 	else
+# 		echo "token not exists, please re-input"
+# 		echo ""
+# 	fi
+# done
 
 
 # configure the toml file
 sed -e "s,host.*,host = \"$SERVER_HOST\"," -i $HOME/.git-sync.toml
 sed -e "s,port.*,port = $SERVER_PORT," -i $HOME/.git-sync.toml
 sed -e "s,username.*,username = \"$USER_NAME\"," -i $HOME/.git-sync.toml
-sed -e "s,token-path.*,token-path = \"$TOKEN_PATH\"," -i $HOME/.git-sync.toml
 
 dividing_line
 show_ok
 echo "your configuration file is generated successfully"
 
-# some deprecated code to congure the github
+dividing_line
+echo "trying to test if ssh-key is set properly"
 
+while [ 1 ];
+do
+	ssh -o BatchMode=yes "$USER_NAME@$SERVER_HOST" -p $SERVER_PORT "exit" >/dev/null 2>&1
+	if [ $? -eq 0 ] ; then 
+		show_ok 
+		echo "the key is set properly"
+		break
+	else
+		show_err
+		echo "not set properly"
+		echo "generating ssh-keys"
+
+		if [ ! -f $HOME/.ssh/id_rsa_sync.pub ]; then
+			ssh-keygen -t rsa -N "" -f $HOME/.ssh/id_rsa_sync
+		fi
+
+		# copy id to the server
+		ssh-copy-id -i "$HOME/.ssh/id_rsa_sync.pub" "$USER_NAME@$SERVER_HOST" -p $SERVER_PORT >/dev/null 2>&1
+
+		# append to .ssh/config
+		echo "Host $SERVER_HOST" >>$HOME/.ssh/config
+		echo "Hostname $SERVER_HOST" >>$HOME/.ssh/config
+		echo "IdentityFile $HOME/.ssh/id_rsa_sync" >>$HOME/.ssh/config
+
+	fi
+done
+
+
+
+# hello
+# some deprecated code to congure the github
 # if [ $(git auth status 2>&1|grep -c "not") -gt 0 ]; then
 # 	echo "you have not logged in"
 # 	echo "spawning the git login process..."
@@ -154,5 +192,4 @@ echo "your configuration file is generated successfully"
 # # read the git cloud repos
 # git repo list
 
-# # log file
-
+#

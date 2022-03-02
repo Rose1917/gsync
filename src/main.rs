@@ -7,6 +7,9 @@ use toml::{de::Error, Value as TomlVal};
 const VERSION: &str = "0.1.0";
 const CONFIG_PATH: &str = ".gh-sync.toml";
 
+mod repos;
+mod server;
+
 static mut REPO_INFO: Vec<TomlVal> = Vec::new();
 fn main() {}
 
@@ -33,6 +36,8 @@ fn parse_repos() -> TomlVal {
         fs::read_to_string(CONFIG_PATH).expect("an error occurred while parsing the repo file");
     toml::from_str(&content).unwrap()
 }
+
+fn init() {}
 
 #[cfg(test)]
 mod test {
