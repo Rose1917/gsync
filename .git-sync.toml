@@ -15,8 +15,9 @@ protocal = "ssh" # we will add more protocal support in the future
 local_base = ""
 
 # some enum values used by other configuration
+
 [enum]
-invoke_types = ["on_change", "on_exit_shell", "on_exit", "on_minutes"]
+invoke_types = ["on_change", "on_exit_shell","on_minutes"]
 repo_status  = ["public", "private"]
 commit_types = ["auto","manually"]
 
