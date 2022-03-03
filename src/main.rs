@@ -123,6 +123,32 @@ struct ServerArgs {
 // static mut REPO_INFO: Vec<TomlVal> = Vec::new();
 fn main() {
     let args: Args = argh::from_env();
+
+    if args.version {
+        println!("v{}", VERSION);
+        std::process::exit(0);
+    }
+
+    if args.nested.is_none() {
+        println!();
+        println!(r#"    welcome to use gsync."#);
+        println!(r#"  ____ ______   ___   _  ____ "#);
+        println!(r#" / ___/ ___\ \ / / \ | |/ ___|"#);
+        println!(r#"| |  _\___ \\ V /|  \| | |    "#);
+        println!(r#"| |_| |___) || | | |\  | |___ "#);
+        println!(r#" \____|____/ |_| |_| \_|\____|"#);
+        println!();
+    }
+
+    let conf_path = std::env::home_dir().unwrap().join(CONFIG_PATH);
+    if !conf_path.exists() {
+        println!(
+            ".git-sync.toml can not be found under {}",
+            std::env::home_dir().unwrap().to_str().unwrap()
+        );
+        println!("try to reinstall the gsync!");
+        std::process::exit(1);
+    }
 }
 
 fn parse_repos() -> TomlVal {
