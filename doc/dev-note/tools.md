@@ -57,3 +57,9 @@ Wed Mar  2 11:36:29 CST 2022
 * learn how to setup
 * add git dependency check
 * add the speed test module
+
+
+Thu Mar  3 12:57:54 CST 2022
+* design the server repos
+* design the commands and what they do
+* design the installing path and base_dir

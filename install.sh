@@ -18,6 +18,9 @@ if [ "$DEBUG" = "true" ];then
 	if [ -f "$HOME/.ssh/id_rsa_sync.pub" ]; then 
 		rm "$HOME/.ssh/id_rsa_sync*"
 	fi
+
+	sed -e "/git-sync/d" -i $HOME/.bashrc
+
 fi
 
 # test if git is installed
@@ -156,7 +159,14 @@ do
 done
 
 
-# add alias
+# add git-sync alias
+dividing_line
+grep "alias gs = git-sync" $HOME/.bashrc 
+if [ $? -ne 0 ];then
+	echo "# git-sync alias"|tee >>$HOME/.bashrc
+	echo "alias gsync="git-sync"" >>$HOME/.bashrc
+	echo "we have added alias to your bashrc, use "source ~/.bashrc" to activate now."
+fi
 
 # add github support
 
