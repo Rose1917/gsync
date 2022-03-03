@@ -15,17 +15,21 @@ if [ "$DEBUG" = "true" ];then
 		rm ~/.git-sync.toml
 	fi
 
-	if [ -f "$HOME/.ssh/id_rsa_sync.pub" ]; then 
-		rm "$HOME/.ssh/id_rsa_sync*"
-	fi
+	ssh renyanjie.cn "rm -rf /home/march1917/git-sync"
+	# if [ -f "$HOME/.ssh/id_rsa_sync.pub" ]; then 
+	# 	rm $HOME/.ssh/id_rsa_sync*
+	# fi
+
 
 	sed -e "/git-sync/d" -i $HOME/.bashrc
+	rm -rf ~/git-sync/meta
+
 
 fi
 
 # test if git is installed
 dividing_line
-echo "check if git is installed..."
+echos "check if git is installed..."
 if command -v git >/dev/null 2>&1;then
 	show_ok
 	echo "git is installed"
@@ -50,7 +54,7 @@ else
 fi
 
 dividing_line
-echo "installing the configuration file..."
+echos "installing the configuration file..."
 # test if the git-sync.toml
 if [  -f "$CONF_PATH" ];then
 	echo "configuration file already exists"
@@ -66,7 +70,7 @@ else
 	fi
 fi
 dividing_line
-echo "we need to configure your git server account"
+echos "we need to configure your git server account"
 
 # test the server 22 port is open
 SERVER_HOST=""
@@ -95,12 +99,41 @@ done
 # set the user
 dividing_line
 USER_NAME=""
-echo "please input your user to login the remote server"
-echo "maybe the current user?$USER if you press enter"
+echos "please input your user to login the remote server"
+echos "maybe the current user?($USER if you press enter)"
 read -p "username:" USER_NAME
 if [ "$USER_NAME" = "" ]; then 
 	USER_NAME="$USER"
 fi
+
+# set the local dir
+dividing_line
+LOCAL_BASE=""
+echos "please tell us where you want to download remote repos"
+echos "maybe the default folder? ($HOME/git-sync if you press enter)"
+
+while [ 1 ];
+do
+	read -e -p "local path:"  LOCAL_BASE
+	if [ "$LOCAL_BASE" = "" ]; then 
+		mkdir -p $HOME/git-sync
+		LOCAL_BASE=$HOME/git-sync
+	fi
+
+	if [ -d $LOCAL_BASE ];then 
+		show_ok
+		echo "local folder:$LOCAL_BASE"
+		break
+	else
+		show_err
+		echo "directory does not exists, please re-input"
+		echo ""
+	fi
+done
+
+
+
+# set the remote dir
 
 
 # dividing_line
@@ -126,10 +159,10 @@ sed -e "s,local_base.*,local_base = \"/home/$USER_NAME\"," -i $HOME/.git-sync.to
 
 dividing_line
 show_ok
-echo "your configuration file is generated successfully"
+echos "your configuration file is generated successfully"
 
 dividing_line
-echo "trying to test if ssh-key is set properly"
+echos "trying to test if ssh-key is set properly"
 
 while [ 1 ];
 do
@@ -158,9 +191,44 @@ do
 	fi
 done
 
+# test if server is already in use
+dividing_line
+echos "test if the server is initialized already"
+
+ssh "$USER_NAME@$SERVER_HOST"  -p $SERVER_PORT test -d "/home/$USER_NAME/git-sync"
+if [ $? -eq 0 ];then 
+	show_ok 
+	echo "the server is set already"
+else 
+	show_err
+	echo "the server is not set yet"
+	show_wait
+	echo "initialzing, it may take some time"
+	ssh "$USER_NAME@$SERVER_HOST"  -p $SERVER_PORT 'bash -s' <./scripts/init-server.sh
+
+	if [ $? -eq 0 ];then 
+		show_ok 
+		echo "the server is set already"
+	fi
+
+fi
+
+# clone the meta to local
+dividing_line 
+show_wait
+echos "getting the repos list..."
+git clone -q $USER_NAME@$SERVER_HOST:git-sync/meta  $LOCAL_BASE/meta
+if [ -d $LOCAL_BASE/meta ]; then 
+	show_ok 
+	echo "reading the repo list success"
+else 
+	show_err 
+	echo "something went wrong when we are getting the repo list"
+fi
 
 # add git-sync alias
 dividing_line
+echos "add the alias"
 grep "alias gs = git-sync" $HOME/.bashrc 
 if [ $? -ne 0 ];then
 	echo "# git-sync alias"|tee >>$HOME/.bashrc

@@ -15,4 +15,12 @@ show_err(){
 show_warn(){
 	echo -n " ⚠"
 }
+show_wait(){
+	echo -n " 🦄"
+}
 
+echos(){
+	if [ $# == 1 ]; then
+		echo -e "${Green}${1}${Color_Off}"
+	fi
+}

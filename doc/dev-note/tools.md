@@ -63,3 +63,4 @@ Thu Mar  3 12:57:54 CST 2022
 * design the server repos
 * design the commands and what they do
 * design the installing path and base_dir
+* add user directly
