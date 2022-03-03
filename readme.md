@@ -2,11 +2,14 @@
 #### intruction
 * general instroduction: gsync is a free sync tool based on git.
 * why I developed this: it is hard for me to find a good sync tool in linux command line! Althougn I know git itself is good enough to be a sync tool. but i am tired of commiting files when i left my laptop in my sleeping room.And also, in some cases, I do not care the version control so much, I just want to make it easier to sync files on the different laptops.
+* git sync is good
 
 #### features
 * open source
-* fast
+* fast, since 
 * you use your own server
+* multiple sync modes: on file changed, on file closed, on minutes.
+* add update
 
 #### prerequisite
 * git
@@ -58,13 +61,18 @@
 	gsync daemon --status
 ```
 
-7. You can see the logs to see if gsync went well.
+8. You can see the logs to see if gsync went well.
 ```shell
 	gsync log
 ```
 
+9. If you want to change your server(to-do)
+```shell
+	gsync reconfig
+```
 
-#### To-do
+
+#### TODO
 * add GUI support
 * add github server support
 	* if you have your own server

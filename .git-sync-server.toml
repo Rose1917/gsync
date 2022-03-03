@@ -1,2 +1,6 @@
-[server]
-base_dir = ""
+[remote]
+remote_base = "$HOME/git-sync"
+
+[[remote-repos]]
+# repo_name    = ""
+# created_date = "" 

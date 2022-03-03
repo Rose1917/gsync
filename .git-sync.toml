@@ -1,7 +1,8 @@
 # DO NOT CHANGE THIS FILE MANUALLY
 # SINCE THIS IS A TEMPLATE FILE
 [global]
-enable = "true"
+enable  = "true"
+started = "true"
 
 [remote]
 host = "your remote server"
@@ -17,41 +18,15 @@ local_base = ""
 # some enum values used by other configuration
 
 [enum]
-invoke_types = ["on_change", "on_exit_shell","on_minutes"]
+sync_types   = ["on_change", "on_minutes", "on_close_file""]
 repo_status  = ["public", "private"]
-commit_types = ["auto","manually"]
+commit_types = ["auto", "manually"]
 
 
-[[owned-repos]]
-# repo_name = "" # will mapped to https://github.com/username/reponame
-# local_path = "gh-sync" 
-# sync_freq = 5
-# if_owner = false
+[[local-repos]]
+# repo_name    = "" # will mapped to /home/$USERNAME/git-sync/repo_name
+# local_path   = "gh-sync" 
+# sync_type    = "on_exit"
+# sync_freq    = 5     # is valid when sync_type is on_change,1 by default 
+# if_owner     = false # if if_owner, it says it is synced from the remote
 # if_activated = true
-# commit_info = ""
-# commit_trigger = "auto"
-
-# for the local repos, you need to specify the absolute path of it
-[[owned-repos]]
-# repo_name = ""
-# local_path = "/home/march1917/projects/rust/citybound"
-# remote_path = ""
-# sync_freq = 7
-# is_on_gh = true
-# if_activated = true
-# commit_info = ""
-# commit_trigger = "auto"
-
-[[cooperation-repos]]
-
-
-[[cooperation-repos]]
-
-
-[[cloud-repos]]
-# repo_name = ""
-# sync_freq = 7
-# is_on_gh = true
-# if_activated = true
-# commit_info = ""
-# commit_trigger = "auto"
