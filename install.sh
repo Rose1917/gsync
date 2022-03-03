@@ -224,7 +224,11 @@ if [ -d $LOCAL_BASE/meta ]; then
 else 
 	show_err 
 	echo "something went wrong when we are getting the repo list"
+	exit
 fi
+# build the project(optional?)
+
+# add gsync to the PATH
 
 # add git-sync alias
 dividing_line
