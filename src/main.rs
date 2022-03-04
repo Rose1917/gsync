@@ -1,4 +1,7 @@
 use argh::FromArgs;
+use serde::Deserialize;
+use serde::Serialize;
+use toml::value::Datetime;
 use toml::{de::Error, Value as TomlVal};
 
 use std::fs;
@@ -8,7 +11,7 @@ use std::process::{Command, Stdio};
 use crate::utils::*;
 
 const VERSION: &str = "0.1.0";
-const CONFIG_PATH: &str = ".git-sync.toml";
+const CONFIG_NAME: &str = ".git-sync.toml";
 
 mod repos;
 mod server;
@@ -120,15 +123,50 @@ struct ServerArgs {
     reset: bool,
 }
 
+#[derive(Serialize, Deserialize, Debug)]
+struct Config {
+    status: Status,
+    remote: Remote,
+    repos: Option<Vec<Repo>>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+struct Status {
+    running: bool,
+    enabled: bool,
+    local_base: String,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+struct Remote {
+    host: String,
+    port: i32,
+    user_name: String,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+struct Repo {
+    repo_name: String,
+    local_path: String,
+    sync_type: String,
+    sync_freq: i32,
+    if_owner: bool,
+    if_activated: bool,
+    added_time: Datetime,
+    synced_time: Datetime,
+}
+
 // static mut REPO_INFO: Vec<TomlVal> = Vec::new();
 fn main() {
     let args: Args = argh::from_env();
 
+    // handle the `gsync --version`
     if args.version {
         println!("v{}", VERSION);
         std::process::exit(0);
     }
 
+    // handle the `gsync`
     if args.nested.is_none() {
         println!();
         println!(r#"    welcome to use gsync."#);
@@ -140,10 +178,10 @@ fn main() {
         println!();
     }
 
-    // trying to find configuration file in ~/.git-sync.toml
+    // check the configuration file in ~/.git-sync.toml
     let conf_path = std::env::home_dir()
         .unwrap()
-        .join(CONFIG_PATH)
+        .join(CONFIG_NAME)
         .as_path()
         .to_owned();
 
@@ -156,22 +194,38 @@ fn main() {
         std::process::exit(1);
     }
 
+    // check the git prerequisites
     if !if_git_exists() {
         println!("We cannot find `git`.");
         println!("Try running `git --version` to diagnose your problem.");
         std::process::exit(1);
     }
 
-    let toml_str = fs::read_to_string(conf_path.to_str().unwrap());
+    // parse the ~/.git-sync.toml
+    let toml_str = &fs::read_to_string(conf_path.to_str().unwrap()).unwrap();
+    let conf: Config = toml::from_str(toml_str).unwrap_or_else(|e| {
+        println!("{}", e);
+        println!("an error occurred while paring the gsync configuration file");
+        std::process::exit(1);
+    });
+
+    // test if the daemon is on
+    if !conf.status.running {
+        println!("the gsync daemon is not on, please run gsync start to start it");
+        std::process::exit(1);
+    }
+
+    // test if the daemon is on
+    println!("{:?}", conf);
 }
 
 fn parse_repos() -> TomlVal {
-    // if !if_file_exists(CONFIG_PATH) {
-    //     eprintln!("can not find the configuration file in {}", CONFIG_PATH);
+    // if !if_file_exists(CONFIG_NAME) {
+    //     eprintln!("can not find the configuration file in {}", CONFIG_NAME);
     // }
 
     let content =
-        fs::read_to_string(CONFIG_PATH).expect("an error occurred while parsing the repo file");
+        fs::read_to_string(CONFIG_NAME).expect("an error occurred while parsing the repo file");
     toml::from_str(&content).unwrap()
 }
 

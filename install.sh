@@ -154,7 +154,7 @@ done
 # configure the toml file
 sed -e "s,host.*,host = \"$SERVER_HOST\"," -i $HOME/.git-sync.toml
 sed -e "s,port.*,port = $SERVER_PORT," -i $HOME/.git-sync.toml
-sed -e "s,username.*,username = \"$USER_NAME\"," -i $HOME/.git-sync.toml
+sed -e "s,user_name.*,user_name = \"$USER_NAME\"," -i $HOME/.git-sync.toml
 sed -e "s,local_base.*,local_base = \"$LOCAL_BASE\"," -i $HOME/.git-sync.toml
 
 dividing_line
