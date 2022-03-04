@@ -1,4 +1,5 @@
 # GSYNC(in develop)
+## Introduction
 ### intruction
 * gsync is a free command line sync tool based on git.
 * why I developed this: it is hard for me to find a good sync tool in linux command line! Althougn I know git itself is good enough to be a sync tool. but i am tired of commiting files when i left my laptop in my bed room.And also, in some cases, I do not care the version control so much, I just want to make it easier to sync files on the different laptops.
@@ -9,9 +10,14 @@
 * safe, gsyncis based on your own server
 * multiple sync modes: on file changed, on file closed, on minutes.
 
+## Installation
 ### prerequisite
 * git
 * ssh
+
+### install
+<img src = "./screenshots/install.png">
+
 
 
 ### usage
