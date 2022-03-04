@@ -247,11 +247,13 @@ fi
 # show the banner 
 dividing_line
 echo "    welcome to use gsync...";
-echo "  ____ ______   ___   _  ____ ";
-echo " / ___/ ___\ \ / / \ | |/ ___|";
-echo "| |  _\___ \\ V /|  \| | |    ";
-echo "| |_| |___) || | | |\  | |___ ";
-echo " \____|____/ |_| |_| \_|\____|";
+echo '''
+  ____ ______   ___   _  ____ 
+ / ___/ ___\ \ / / \ | |/ ___|
+| |  _\___ \\ V /|  \| | |    
+| |_| |___) || | | |\  | |___ 
+ \____|____/ |_| |_| \_|\____|
+     '''
 
 # some deprecated code to congure the github
 # if [ $(git auth status 2>&1|grep -c "not") -gt 0 ]; then
