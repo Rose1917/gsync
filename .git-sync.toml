@@ -2,7 +2,6 @@
 # SINCE THIS IS A TEMPLATE FILE
 [status]
 enabled  = true
-running  = false
 local_base = "" # where the folders from the remote downloads
 
 [remote]

@@ -1,20 +1,20 @@
 use argh::FromArgs;
+use dirs;
 use serde::Deserialize;
 use serde::Serialize;
 use toml::value::Datetime;
-use toml::{de::Error, Value as TomlVal};
 
 use std::fs;
-use std::path::Path;
-use std::process::{Command, Stdio};
 
 use crate::utils::*;
 
 const VERSION: &str = "0.1.0";
 const CONFIG_NAME: &str = ".git-sync.toml";
-
+#[allow(dead_code)]
 mod repos;
+#[allow(dead_code)]
 mod server;
+#[allow(dead_code)]
 mod utils;
 
 #[derive(FromArgs, PartialEq, Debug)]
@@ -132,7 +132,6 @@ struct Config {
 
 #[derive(Serialize, Deserialize, Debug)]
 struct Status {
-    running: bool,
     enabled: bool,
     local_base: String,
 }
@@ -179,7 +178,7 @@ fn main() {
     }
 
     // check the configuration file in ~/.git-sync.toml
-    let conf_path = std::env::home_dir()
+    let conf_path = dirs::home_dir()
         .unwrap()
         .join(CONFIG_NAME)
         .as_path()
@@ -188,7 +187,7 @@ fn main() {
     if !conf_path.exists() {
         println!(
             ".git-sync.toml can not be found under {}",
-            std::env::home_dir().unwrap().to_str().unwrap()
+            dirs::home_dir().unwrap().to_str().unwrap()
         );
         println!("you can try to reinstall gsync");
         std::process::exit(1);
@@ -210,8 +209,8 @@ fn main() {
     });
 
     // test if the daemon is on
-    if !conf.status.running {
-        println!("the gsync daemon is not on, please run gsync start to start it");
+    if !if_daemon_running("gsyncd-fake") {
+        println!("the gsync daemon is not running, please run gsync start to start it");
         std::process::exit(1);
     }
 
@@ -219,19 +218,11 @@ fn main() {
     println!("{:?}", conf);
 }
 
-fn parse_repos() -> TomlVal {
-    // if !if_file_exists(CONFIG_NAME) {
-    //     eprintln!("can not find the configuration file in {}", CONFIG_NAME);
-    // }
-
-    let content =
-        fs::read_to_string(CONFIG_NAME).expect("an error occurred while parsing the repo file");
-    toml::from_str(&content).unwrap()
-}
-
+#[allow(dead_code)]
 fn init() {}
 
 #[cfg(test)]
+#[allow(dead_code)]
 mod test {
 
     use super::utils::*;
