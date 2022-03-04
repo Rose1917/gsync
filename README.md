@@ -16,6 +16,9 @@
 * ssh
 
 ### install
+```shell
+./install.sh
+```
 <img src = "./screenshots/install.png">
 
 
