@@ -83,3 +83,4 @@
 * add github server support
 	* if you have your own server
 	* if you do not have your own server, use github
+* add web server like gitlab
