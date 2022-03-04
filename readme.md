@@ -1,23 +1,20 @@
 # GSYNC(in develop)
-#### intruction
-* general instroduction: gsync is a free sync tool based on git.
-* why I developed this: it is hard for me to find a good sync tool in linux command line! Althougn I know git itself is good enough to be a sync tool. but i am tired of commiting files when i left my laptop in my sleeping room.And also, in some cases, I do not care the version control so much, I just want to make it easier to sync files on the different laptops.
-* git sync is good
+### intruction
+* gsync is a free command line sync tool based on git.
+* why I developed this: it is hard for me to find a good sync tool in linux command line! Althougn I know git itself is good enough to be a sync tool. but i am tired of commiting files when i left my laptop in my bed room.And also, in some cases, I do not care the version control so much, I just want to make it easier to sync files on the different laptops.
 
-#### features
-* open source
-* fast, since 
-* you use your own server
+### features
+* open source and free
+* no speed limit
+* safe, gsyncis based on your own server
 * multiple sync modes: on file changed, on file closed, on minutes.
-* add update
 
 #### prerequisite
 * git
 * ssh
-* so it is
 
 
-#### usage
+### usage
 1. we strongly recommend you to create a new account on your remote server. Use the following command to create a new user. And remember this name, we will use it to configure the sync.
 ```shell
 	useradd <YOUR_USER_NAME>
@@ -72,7 +69,7 @@
 ```
 
 
-#### TODO
+### TODO
 * add GUI support
 * add github server support
 	* if you have your own server

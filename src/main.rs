@@ -140,15 +140,29 @@ fn main() {
         println!();
     }
 
-    let conf_path = std::env::home_dir().unwrap().join(CONFIG_PATH);
+    // trying to find configuration file in ~/.git-sync.toml
+    let conf_path = std::env::home_dir()
+        .unwrap()
+        .join(CONFIG_PATH)
+        .as_path()
+        .to_owned();
+
     if !conf_path.exists() {
         println!(
             ".git-sync.toml can not be found under {}",
             std::env::home_dir().unwrap().to_str().unwrap()
         );
-        println!("try to reinstall the gsync!");
+        println!("you can try to reinstall gsync");
         std::process::exit(1);
     }
+
+    if !if_git_exists() {
+        println!("We cannot find `git`.");
+        println!("Try running `git --version` to diagnose your problem.");
+        std::process::exit(1);
+    }
+
+    let toml_str = fs::read_to_string(conf_path.to_str().unwrap());
 }
 
 fn parse_repos() -> TomlVal {

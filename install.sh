@@ -155,7 +155,7 @@ done
 sed -e "s,host.*,host = \"$SERVER_HOST\"," -i $HOME/.git-sync.toml
 sed -e "s,port.*,port = $SERVER_PORT," -i $HOME/.git-sync.toml
 sed -e "s,username.*,username = \"$USER_NAME\"," -i $HOME/.git-sync.toml
-sed -e "s,local_base.*,local_base = \"/home/$USER_NAME\"," -i $HOME/.git-sync.toml
+sed -e "s,local_base.*,local_base = \"$LOCAL_BASE\"," -i $HOME/.git-sync.toml
 
 dividing_line
 show_ok
@@ -235,6 +235,7 @@ dividing_line
 echos "add the alias"
 grep "alias gs = git-sync" $HOME/.bashrc 
 if [ $? -ne 0 ];then
+	show_ok
 	echo "# git-sync alias"|tee >>$HOME/.bashrc
 	echo "alias gsync="git-sync"" >>$HOME/.bashrc
 	echo "we have added alias to your bashrc, use "source ~/.bashrc" to activate now."
@@ -243,8 +244,15 @@ fi
 # add github support
 
 
+# show the banner 
+dividing_line
+echo "    welcome to use gsync...";
+echo "  ____ ______   ___   _  ____ ";
+echo " / ___/ ___\ \ / / \ | |/ ___|";
+echo "| |  _\___ \\ V /|  \| | |    ";
+echo "| |_| |___) || | | |\  | |___ ";
+echo " \____|____/ |_| |_| \_|\____|";
 
-# hello
 # some deprecated code to congure the github
 # if [ $(git auth status 2>&1|grep -c "not") -gt 0 ]; then
 # 	echo "you have not logged in"
