@@ -9,7 +9,7 @@
 * safe, gsyncis based on your own server
 * multiple sync modes: on file changed, on file closed, on minutes.
 
-#### prerequisite
+### prerequisite
 * git
 * ssh
 
