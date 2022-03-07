@@ -6,6 +6,7 @@ use toml::value::Datetime;
 
 use std::fs;
 
+use crate::repos::*;
 use crate::utils::*;
 
 const VERSION: &str = "0.1.0";
@@ -40,7 +41,7 @@ enum Subcommands {
 #[derive(FromArgs, PartialEq, Debug)]
 #[argh(subcommand, name = "list")]
 /// list the tracked folders and folders in the server
-struct ListArgs {
+pub struct ListArgs {
     #[argh(switch)]
     ///show the remote folders that have not been tracked
     available: bool,
@@ -48,12 +49,16 @@ struct ListArgs {
     #[argh(switch)]
     ///show the tracked folders
     tracked: bool,
+
+    #[argh(switch)]
+    ///show the verbose information
+    verbose: bool,
 }
 
 #[derive(FromArgs, PartialEq, Debug)]
 #[argh(subcommand, name = "track")]
 /// append a new folder to tracked folders set
-struct TrackArgs {
+pub struct TrackArgs {
     #[argh(switch)]
     /// download a folder from server and track it
     online: bool,
@@ -79,7 +84,7 @@ struct TrackArgs {
 #[derive(FromArgs, PartialEq, Debug)]
 #[argh(subcommand, name = "untrack")]
 /// remove a folder from tracking directory set
-struct UntrackArgs {
+pub struct UntrackArgs {
     #[argh(positional)]
     /// the path to where it is stored
     path: String,
@@ -88,7 +93,7 @@ struct UntrackArgs {
 #[derive(FromArgs, PartialEq, Debug)]
 #[argh(subcommand, name = "daemon")]
 /// manage the git-sync daemon status
-struct DaemonArgs {
+pub struct DaemonArgs {
     #[argh(switch)]
     /// show the gsync daemon status
     status: bool,
@@ -124,27 +129,27 @@ struct ServerArgs {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-struct Config {
+pub struct Config {
     status: Status,
     remote: Remote,
     repos: Option<Vec<Repo>>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-struct Status {
+pub struct Status {
     enabled: bool,
     local_base: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-struct Remote {
+pub struct Remote {
     host: String,
     port: i32,
     user_name: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-struct Repo {
+pub struct Repo {
     repo_name: String,
     local_path: String,
     sync_type: String,
@@ -169,12 +174,14 @@ fn main() {
     if args.nested.is_none() {
         println!();
         println!(r#"    welcome to use gsync."#);
+        println!(r#"    use gsync --help to see all the subcommands"#);
         println!(r#"  ____ ______   ___   _  ____ "#);
         println!(r#" / ___/ ___\ \ / / \ | |/ ___|"#);
         println!(r#"| |  _\___ \\ V /|  \| | |    "#);
         println!(r#"| |_| |___) || | | |\  | |___ "#);
         println!(r#" \____|____/ |_| |_| \_|\____|"#);
         println!();
+        std::process::exit(0);
     }
 
     // check the configuration file in ~/.git-sync.toml
@@ -200,22 +207,29 @@ fn main() {
         std::process::exit(1);
     }
 
-    // parse the ~/.git-sync.toml
-    let toml_str = &fs::read_to_string(conf_path.to_str().unwrap()).unwrap();
-    let conf: Config = toml::from_str(toml_str).unwrap_or_else(|e| {
-        println!("{}", e);
-        println!("an error occurred while paring the gsync configuration file");
-        std::process::exit(1);
-    });
-
-    // test if the daemon is on
+    // test if the daemon is running
     if !if_daemon_running("gsyncd-fake") {
         println!("the gsync daemon is not running, please run gsync start to start it");
         std::process::exit(1);
     }
 
-    // test if the daemon is on
-    println!("{:?}", conf);
+    // parse the ~/.git-sync.toml
+    let toml_str = &fs::read_to_string(conf_path.to_str().unwrap()).unwrap();
+    let mut toml_conf: Config = toml::from_str(toml_str).unwrap_or_else(|e| {
+        println!("{}", e);
+        println!("an error occurred while paring the gsync configuration file");
+        std::process::exit(1);
+    });
+
+    // get the subcommands
+    let command = args.nested.unwrap();
+    match command {
+        Subcommands::List(subargs) => show_repos(&subargs, &toml_conf),
+        Subcommands::Track(subargs) => (),
+        Subcommands::Untrack(subargs) => (),
+        Subcommands::Daemon(subargs) => (),
+        Subcommands::Server(subargs) => (),
+    }
 }
 
 #[allow(dead_code)]
