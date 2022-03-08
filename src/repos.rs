@@ -19,6 +19,11 @@ fn if_path_trcked(path: &str, toml_conf: &Config) -> bool {
     repos.iter().any(|repo| repo.local_path.eq(path))
 }
 
+fn find_repo_by_path(repo_path: &str, toml_conf: &Config) -> Option<usize> {
+    let repos = &toml_conf.repos;
+    repos.iter().position(|repo| repo.local_path.eq(repo_path))
+}
+
 // fn get_conf_path() -> std::path::Path {}
 
 pub fn show_repos(subargs: &ListArgs, toml_conf: &Config, server_toml_conf: &ServerConfig) {
@@ -76,11 +81,7 @@ pub fn show_repos(subargs: &ListArgs, toml_conf: &Config, server_toml_conf: &Ser
 
 fn show_locals(subargs: &ListArgs, toml_conf: &Config, server_toml_conf: &ServerConfig) {}
 
-pub fn track_repos(
-    subargs: &TrackArgs,
-    toml_conf: &mut Config,
-    server_toml_conf: &mut ServerConfig,
-) {
+pub fn track_repos(subargs: &TrackArgs, toml_conf: &mut Config) {
     // check if the path is a valid directory
     let full_path = std::path::PathBuf::from(&subargs.path);
     if !full_path.is_dir() {
@@ -121,6 +122,46 @@ pub fn track_repos(
     // add this repo to the vector
     let repo_list = &mut toml_conf.repos;
     repo_list.push(new_repo);
+
+    // write to file
+    let toml_str = toml::to_string(&toml_conf).unwrap();
+    let toml_path = dirs::home_dir()
+        .unwrap()
+        .join(CONFIG_NAME)
+        .as_path()
+        .to_owned();
+    fs::write(toml_path, toml_str).expect("write the toml file error");
+}
+pub fn untrack_repos(subargs: &UntrackArgs, toml_conf: &mut Config) {
+    // check if the path is a valid directory
+    let full_path = std::path::PathBuf::from(&subargs.path);
+    if !full_path.is_dir() {
+        println!("we can not locate the directory {}", &subargs.path);
+        println!("please check the directory path in detail");
+        std::process::exit(0);
+    }
+
+    // transfer the relative path to absolute path
+    let full_path = if full_path.is_relative() {
+        fs::canonicalize(full_path).unwrap()
+    } else {
+        full_path
+    };
+
+    // get the to repo to untrack
+    let untrack_repo = find_repo_by_path(full_path.to_str().unwrap(), toml_conf);
+
+    // check if the path is already in track
+    if let None = untrack_repo {
+        println!("the path {} is not tracked yet", &subargs.path);
+        std::process::exit(0);
+    }
+
+    toml_conf.repos.remove(untrack_repo.unwrap());
+
+    // add this repo to the vector
+    // let repo_list = &mut toml_conf.repos;
+    // repo_list.push(new_repo);
 
     // write to file
     let toml_str = toml::to_string(&toml_conf).unwrap();

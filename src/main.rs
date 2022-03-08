@@ -261,8 +261,9 @@ fn main() {
     let command = args.nested.unwrap();
     match command {
         Subcommands::List(subargs) => show_repos(&subargs, &toml_conf, &server_toml_conf),
-        Subcommands::Track(subargs) => track_repos(&subargs, &mut toml_conf, &mut server_toml_conf),
-        Subcommands::Untrack(subargs) => (),
+        Subcommands::Track(subargs) => track_repos(&subargs, &mut toml_conf),
+        Subcommands::Untrack(subargs) => untrack_repos(&subargs, &mut toml_conf),
+
         Subcommands::Daemon(subargs) => (),
         Subcommands::Server(subargs) => (),
     }
