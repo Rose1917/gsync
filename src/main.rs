@@ -46,7 +46,7 @@ enum Subcommands {
 pub struct ListArgs {
     #[argh(switch)]
     ///show the remote folders that have not been tracked
-    available: bool,
+    online: bool,
 
     #[argh(switch)]
     ///show the tracked folders
@@ -134,7 +134,7 @@ struct ServerArgs {
 pub struct Config {
     status: Status,
     remote: Remote,
-    repos: Option<Vec<Repo>>,
+    repos: Vec<Repo>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -155,11 +155,11 @@ pub struct Repo {
     repo_name: String,
     local_path: String,
     sync_type: String,
-    sync_freq: i32,
+    sync_freq: u32,
     if_owner: bool,
     if_activated: bool,
-    added_time: Datetime,
-    synced_time: Datetime,
+    added_time: String,
+    synced_time: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -261,7 +261,7 @@ fn main() {
     let command = args.nested.unwrap();
     match command {
         Subcommands::List(subargs) => show_repos(&subargs, &toml_conf, &server_toml_conf),
-        Subcommands::Track(subargs) => (),
+        Subcommands::Track(subargs) => track_repos(&subargs, &mut toml_conf, &mut server_toml_conf),
         Subcommands::Untrack(subargs) => (),
         Subcommands::Daemon(subargs) => (),
         Subcommands::Server(subargs) => (),
