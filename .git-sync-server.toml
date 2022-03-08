@@ -1,6 +1,8 @@
+# this is the server config file to record how many repos in the server
+
 [remote]
 remote_base = "$HOME/git-sync"
 
-[[remote-repos]]
-# repo_name    = ""
-# created_date = "" 
+[[repos]]
+repo_name    = "a repo stored by server" # remote_base/git-sync/repo_name
+created_date = "Tue Mar  8 11:31:52 CST 2022"

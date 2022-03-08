@@ -4,6 +4,8 @@ if [ -f $HOME/.ssh/*.pub ]; then
 else
 	echo "error"
 fi
+rm -rf ~/git-sync/meta
+git clone "renyanjie.cn:git-sync/meta" ~/git-sync/meta
 
 
 echo '''

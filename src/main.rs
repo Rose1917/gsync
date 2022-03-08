@@ -11,6 +11,8 @@ use crate::utils::*;
 
 const VERSION: &str = "0.1.0";
 const CONFIG_NAME: &str = ".git-sync.toml";
+const SERVER_CONFIG_NAME: &str = ".git-sync-server.toml";
+const SERVER_REPO_NAME: &str = "meta";
 #[allow(dead_code)]
 mod repos;
 #[allow(dead_code)]
@@ -160,6 +162,17 @@ pub struct Repo {
     synced_time: Datetime,
 }
 
+#[derive(Serialize, Deserialize, Debug)]
+pub struct ServerRepo {
+    repo_name: String,
+    added_time: String,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct ServerConfig {
+    repos: Option<Vec<ServerRepo>>,
+}
+
 // static mut REPO_INFO: Vec<TomlVal> = Vec::new();
 fn main() {
     let args: Args = argh::from_env();
@@ -221,10 +234,33 @@ fn main() {
         std::process::exit(1);
     });
 
+    // get the local_base dir
+    let local_base = &toml_conf.status.local_base;
+    let server_config = std::path::Path::new(local_base)
+        .join(SERVER_REPO_NAME)
+        .join(SERVER_CONFIG_NAME)
+        .as_path()
+        .to_owned();
+
+    if !server_config.exists() {
+        println!(
+            "can not find the server config name in {}",
+            server_config.to_str().unwrap()
+        );
+    }
+
+    // parse the ~/base_dir/git-sync/.git-sync-server.toml
+    let server_toml_str = &fs::read_to_string(server_config.to_str().unwrap()).unwrap();
+    let mut server_toml_conf: ServerConfig = toml::from_str(server_toml_str).unwrap_or_else(|e| {
+        println!("{}", e);
+        println!("an error occurred while parsing the gsync server configuration file");
+        std::process::exit(1);
+    });
+
     // get the subcommands
     let command = args.nested.unwrap();
     match command {
-        Subcommands::List(subargs) => show_repos(&subargs, &toml_conf),
+        Subcommands::List(subargs) => show_repos(&subargs, &toml_conf, &server_toml_conf),
         Subcommands::Track(subargs) => (),
         Subcommands::Untrack(subargs) => (),
         Subcommands::Daemon(subargs) => (),

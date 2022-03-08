@@ -206,10 +206,12 @@ else
 	echo "initialzing, it may take some time"
 	ssh "$USER_NAME@$SERVER_HOST"  -p $SERVER_PORT 'bash -s' <./scripts/init-server.sh
 
+	set -e
 	if [ $? -eq 0 ];then 
 		show_ok 
 		echo "the server is set already"
 	fi
+	set +e
 
 fi
 
@@ -217,7 +219,7 @@ fi
 dividing_line 
 show_wait
 echos "getting the repos list..."
-git clone -q $USER_NAME@$SERVER_HOST:git-sync/meta  $LOCAL_BASE/meta
+git clone  $USER_NAME@$SERVER_HOST:git-sync/meta  $LOCAL_BASE/meta
 if [ -d $LOCAL_BASE/meta ]; then 
 	show_ok 
 	echo "reading the repo list success"
