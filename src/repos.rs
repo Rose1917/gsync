@@ -5,6 +5,7 @@ use crate::{DaemonArgs, ListArgs, ServerArgs, TrackArgs, UntrackArgs};
 use crate::CONFIG_NAME;
 
 use chrono::Local;
+use std::env;
 use std::fs;
 use std::path::Path;
 
@@ -81,14 +82,22 @@ pub fn track_repos(
     server_toml_conf: &mut ServerConfig,
 ) {
     // check if the path is a valid directory
-    let full_path = std::path::Path::new(&subargs.path);
+    let full_path = std::path::PathBuf::from(&subargs.path);
     if !full_path.is_dir() {
         println!("we can not locate the directory {}", &subargs.path);
+        println!("please check the directory path in detail");
         std::process::exit(0);
     }
 
+    // transfer the relative path to absolute path
+    let full_path = if full_path.is_relative() {
+        fs::canonicalize(full_path).unwrap()
+    } else {
+        full_path
+    };
+
     // check if the path is already in track
-    if if_path_trcked(&subargs.path, toml_conf) {
+    if if_path_trcked(full_path.to_str().unwrap(), toml_conf) {
         println!("the path {} is already in track", &subargs.path);
         std::process::exit(0);
     }
