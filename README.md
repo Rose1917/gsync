@@ -42,7 +42,7 @@
 
 4. When you want to use in another computer, just install as step2. To see what can be synced, use the following command.
 ```shell
-	gsync list --online
+	gsync list --available
 	gsync list --local # to see the repo tracked on this computer
 	gsync list --all   # to print all the repos both in the remote and local
 	gsync list # the short pattern of gsync --all
