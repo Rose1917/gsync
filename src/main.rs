@@ -6,6 +6,7 @@ use toml::value::Datetime;
 
 use std::fs;
 
+use crate::daemon::*;
 use crate::repos::*;
 use crate::utils::*;
 
@@ -14,9 +15,9 @@ const CONFIG_NAME: &str = ".git-sync.toml";
 const SERVER_CONFIG_NAME: &str = ".git-sync-server.toml";
 const SERVER_REPO_NAME: &str = "meta";
 #[allow(dead_code)]
+mod daemon;
+
 mod repos;
-#[allow(dead_code)]
-mod server;
 #[allow(dead_code)]
 mod utils;
 
@@ -264,7 +265,7 @@ fn main() {
         Subcommands::Track(subargs) => track_repos(&subargs, &mut toml_conf),
         Subcommands::Untrack(subargs) => untrack_repos(&subargs, &mut toml_conf),
 
-        Subcommands::Daemon(subargs) => (),
+        Subcommands::Daemon(subargs) => daemon(&subargs, &mut toml_conf),
         Subcommands::Server(subargs) => (),
     }
 }
